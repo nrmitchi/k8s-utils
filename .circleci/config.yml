@@ -1,0 +1,41 @@
+version: 2
+
+workflows:
+  version: 2
+  publish:
+    jobs:
+      - publish-image:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /master/
+          context: nrmitchi
+
+jobs:
+  publish-image:
+    docker:
+      - image: nrmitchi/docker-ecr:17.11.0
+    steps:
+      - type: checkout
+      - setup_remote_docker:
+          reusable: true
+          exclusive: false
+          version: 17.06.0-ce
+      - run:
+          name: Build docker image
+          command: |
+
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker build -t tmp .
+
+            if [ "$CIRCLE_TAG" != '' ]; then
+              docker tag tmp nrmitchi/k8s-utils:$CIRCLE_TAG
+              docker push nrmitchi/k8s-utils:$CIRCLE_TAG
+            fi
+
+            # Also push to the :latest tag (super fast, doesn't actually take up more space)
+            if [ `git rev-parse origin/master` = "$CIRCLE_SHA1" ]; then
+                docker tag tmp nrmitchi/k8s-utils:latest
+                docker push nrmitchi/k8s-utils:latest
+            fi
