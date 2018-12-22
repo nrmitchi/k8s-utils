@@ -46,4 +46,4 @@ COPY ./bashrc /root/.bashrc
 
 RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
