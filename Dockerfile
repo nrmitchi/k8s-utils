@@ -26,6 +26,7 @@ RUN apk update \
   && wget https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 -O /usr/local/bin/yq \
   && chmod +x usr/local/bin/yq
 
+ADD ./terraform /usr/local/bin/
 # Borrowed from: https://github.com/dtzar/helm-kubectl/blob/master/Dockerfile
 # Note: Latest version of kubectl may be found at:
 # https://aur.archlinux.org/packages/kubectl-bin/
